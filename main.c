@@ -1,8 +1,7 @@
-//Imports. stdio - default. stdlib - system(to run commands). string - to cat strings
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include <unistd.h> // for *NIX systems only, remove if on windows 
 //Looking for args
 int main(int argc, char *argv[])
 {
@@ -15,19 +14,16 @@ int main(int argc, char *argv[])
     else    
     {
       // Checking if the filename is too long(limited so that it's not overflowed)
-      if (strlen(argv[1]) > 99)
+      /*if (strlen(argv[1]) > 99)
       {
         printf("File path (Wayyy) too long. Execution faild\n");
         return (1);
-      } 
-      //assuming it is not too big it will continue to work as normal.
-      else
-      {
+      } */ 
+//assuming it is not too big it will continue to work as normal.
         // combining the word py3(to run the command) and our arg(the file path(hopefully?) in order to get the full name)
-        char py[99] = "python3 ";
-        strcat(py, argv[1]);
-        system(py);
-      }
+        char* py = "python3 "; // make char pointer so there can be no overflow 
+        strcat((py - 1), argv[1]); // remove the null terminator
+        execlp(py, py, NULL); // prefer exec() vs system() as exec closes the previous function while system() uses the fork() function to create a new child process // execlp() is part of unistd.h, so again if using windows prefer system()
     }
-
+  return 0; // be consistent
 }
